@@ -1,7 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
 
-function Heading(props) {
+interface HeadingProps {
+  href: string;
+  text: string;
+}
+
+function Heading(props: HeadingProps) {
   return (
     <div>
       <h1>
@@ -17,12 +21,7 @@ function Heading(props) {
       </h1>
       <hr />
     </div>
-  )
+  );
 }
 
-Heading.propTypes = {
-  href: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired
-}
-
-export default Heading
+export default Heading;

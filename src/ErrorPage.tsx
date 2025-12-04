@@ -6,9 +6,14 @@ import 'spectre.css/dist/spectre-exp.min.css';
 import Layout from './Layout';
 import Heading from './Heading';
 
+interface LocationState {
+  error?: string;
+}
+
 function ErrorPage() {
   const location = useLocation();
-  const error = location.state?.error || ''; // Use optional chaining to handle potential undefined values
+  const state = location.state as LocationState | null;
+  const error = state?.error || ''; // Use optional chaining to handle potential undefined values
 
   return (
     <Layout>

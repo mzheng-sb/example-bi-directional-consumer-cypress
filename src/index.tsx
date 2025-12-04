@@ -6,7 +6,7 @@ import App from './App';
 import ProductPage from './ProductPage';
 import ErrorPage from './ErrorPage';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
   <BrowserRouter>

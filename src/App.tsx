@@ -6,17 +6,13 @@ import 'spectre.css/dist/spectre-exp.min.css';
 import Heading from './Heading';
 import Layout from './Layout';
 import API from './api';
-import PropTypes from 'prop-types'
+import { Product } from './product';
 
-const productPropTypes = {
-  product: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
-  }).isRequired
+interface ProductTableRowProps {
+  product: Product;
 }
 
-function ProductTableRow(props) {
+function ProductTableRow(props: ProductTableRowProps) {
   return (
     <tr className="product-item">
       <td>{props.product.name}</td>
@@ -26,21 +22,24 @@ function ProductTableRow(props) {
           className="btn btn-link"
           to={{
             pathname: '/products/' + props.product.id,
-            state: {
-              product: props.product
-            }
+          }}
+          state={{
+            product: props.product
           }}
         >
           See more!
         </Link>
       </td>
     </tr>
-  )
+  );
 }
-ProductTableRow.propTypes = productPropTypes
 
-function ProductTable(props) {
-  const products = props.products.map((p) => <ProductTableRow key={p.id} product={p} />)
+interface ProductTableProps {
+  products: Product[];
+}
+
+function ProductTable(props: ProductTableProps) {
+  const products = props.products.map((p) => <ProductTableRow key={p.id} product={p} />);
   return (
     <table className="table table-striped table-hover">
       <thead>
@@ -52,18 +51,14 @@ function ProductTable(props) {
       </thead>
       <tbody>{products}</tbody>
     </table>
-  )
-}
-
-ProductTable.propTypes = {
-  products: PropTypes.arrayOf(productPropTypes.product)
+  );
 }
 
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState('');
-  const [products, setProducts] = useState([]);
-  const [visibleProducts, setVisibleProducts] = useState([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchText, setSearchText] = useState<string>('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [visibleProducts, setVisibleProducts] = useState<Product[]>([]);
   const location = useLocation();
   const navigate = useNavigate();
   const id = new URLSearchParams(location.search).get('id') || undefined;
@@ -76,7 +71,7 @@ function App() {
         setVisibleProducts(response);
       } catch (error) {
         console.error('Failed to load products:', error);
-        navigate('/error', { state: { error: error.toString() } });
+        navigate('/error', { state: { error: error instanceof Error ? error.toString() : String(error) } });
       } finally {
         setLoading(false);
       }
@@ -86,7 +81,7 @@ function App() {
   }, [id, navigate]);
 
   const determineVisibleProducts = () => {
-    const findProducts = (search) => {
+    const findProducts = (search: string): Product[] => {
       search = search.toLowerCase();
       return products.filter(
         (p) =>
@@ -99,7 +94,7 @@ function App() {
     setVisibleProducts(searchText ? findProducts(searchText) : products);
   };
 
-  const onSearchTextChange = (e) => {
+  const onSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
     determineVisibleProducts();
   };
