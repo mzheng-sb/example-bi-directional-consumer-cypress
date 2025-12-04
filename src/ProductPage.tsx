@@ -6,21 +6,24 @@ import 'spectre.css/dist/spectre-exp.min.css';
 import Layout from './Layout';
 import Heading from './Heading';
 import API from './api';
+import { Product } from './product';
 
 function ProductPage() {
-  const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState(null);
-  const { id } = useParams();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [product, setProduct] = useState<Product | null>(null);
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
+      if (!id) return;
+      
       try {
         const response = await API.getProduct(id);
         setProduct(response);
       } catch (error) {
         console.error('Failed to load product:', error);
-        navigate('/error', { state: { error: error.toString() } });
+        navigate('/error', { state: { error: error instanceof Error ? error.toString() : String(error) } });
       } finally {
         setLoading(false);
       }
